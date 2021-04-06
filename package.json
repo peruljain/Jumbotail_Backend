@@ -4,9 +4,11 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "build": "tsc",
-    "prestart": "npm run build",
     "start": "node dist/server.js",
+    "build-ts": "tsc",
+    "preinstall": "npm run build-ts",
+    "watch-node": "nodemon dist/server.js",
+    "watch-ts": "tsc -w",
     "test": "jest --detectOpenHandles --testTimeout=10000"
   },
   "keywords": [],
