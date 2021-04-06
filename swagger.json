@@ -1,0 +1,860 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "JumboTail-Gps",
+    "description": "Asset Tracking",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "localhost:8000",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Jumbotail",
+      "description": "API for tracking assets"
+    }
+  ],
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/auth/signin": {
+      "post": {
+        "tags": ["Authentication"],
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User that we want to login",
+            "schema": {
+              "$ref": "#/definitions/UserLogin"
+            }
+          }
+        ],
+        "summary": "Login to system",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/UserResponse"
+            }
+          }
+        }
+      }
+    },
+    "/auth/signup": {
+      "post": {
+        "tags": ["Authentication"],
+        "description": "Create new user in system",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User that we want to create",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "summary": "Sign Up",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "New user is created",
+            "schema": {
+              "$ref": "#/definitions/UserResponse"
+            }
+          }
+        }
+      }
+    },
+    "/auth/updatePassword": {
+      "put": {
+        "tags": ["Authentication"],
+        "description": "Update Password",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": "true",
+            "description": "Token <token>"
+          },
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User that we want to create",
+            "schema": {
+              "$ref": "#/definitions/UpdatePassword"
+            }
+          }
+        ],
+        "summary": "update password",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Password updated",
+            "schema": {
+              "$ref": "#/definitions/AssetUpdateResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/getuser": {
+      "get": {
+        "tags": ["Users"],
+        "description": "Create new user in system",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token <token>"
+          }
+        ],
+        "summary": "Get Profile",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Get Profile",
+            "schema": {
+              "$ref": "#/definitions/ProfileResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/updateprofile": {
+      "put": {
+        "tags": ["Users"],
+        "description": "Update profile in the system",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token <token>"
+          },
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User that we want to create",
+            "schema": {
+              "$ref": "#/definitions/Profile"
+            }
+          }
+        ],
+        "summary": "update Profile",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "update Profile",
+            "schema": {
+              "$ref": "#/definitions/AssetUpdateResponse"
+            }
+          }
+        }
+      }
+    },
+    "/api/asset": {
+      "post": {
+        "tags": ["Assets"],
+        "description": "Create new Asset in system",
+        "parameters": [
+          {
+            "name": "asset",
+            "in": "body",
+            "description": "Asset that we want to create",
+            "schema": {
+              "$ref": "#/definitions/Asset"
+            }
+          }
+        ],
+        "summary": "Create Asset",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "New Asset is created",
+            "schema": {
+              "$ref": "#/definitions/AssetResponse"
+            }
+          }
+        }
+      }
+    },
+    "/api/asset/{id}": {
+      "patch": {
+        "tags": ["Assets"],
+        "parameters": [
+          {
+            "name": "asset",
+            "in": "body",
+            "description": "Update Asset Location",
+            "schema": {
+              "$ref": "#/definitions/AssetUpdate"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": "true"
+          }
+        ],
+        "summary": "Update Asset Location",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/AssetUpdateResponse"
+            }
+          }
+        }
+      }
+    },
+    "/api/asset/list": {
+      "get": {
+        "tags": ["Assets"],
+        "description": "Get Assets",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": "true",
+            "description": "Token <token>"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Type of asset"
+          }
+        ],
+        "summary": "Get Assets List",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Get Assets",
+            "schema": {
+              "$ref": "#/definitions/AssetsList"
+            }
+          }
+        }
+      }
+    },
+    "/api/asset/track/{_id}": {
+      "get": {
+        "tags": ["Assets"],
+        "description": "Get Asset",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token <token>"
+          },
+          {
+            "name": "_id",
+            "in": "path"
+          }
+        ],
+        "summary": "Get Asset ",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Get Asset",
+            "schema": {
+              "$ref": "#/definitions/AssetTrackResponse"
+            }
+          }
+        }
+      }
+    },
+    "/api/asset/trackbytime/{_id}": {
+      "get": {
+        "tags": ["Assets"],
+        "description": "Get Asset",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token <token>"
+          },
+          {
+            "name": "_id",
+            "in": "path"
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "description": "start-timestamp",
+            "required": "true"
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "description": "end-timestamp",
+            "required": "true"
+          }
+        ],
+        "summary": "Get Asset ",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Get Asset",
+            "schema": {
+              "$ref": "#/definitions/AssetTrackResponse"
+            }
+          }
+        }
+      }
+    },
+    "/api/asset/geofence/{id}": {
+      "put": {
+        "tags": ["Assets"],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": "true",
+            "description": "Token <token>"
+          },
+          {
+            "name": "geofence",
+            "in": "body",
+            "description": "Update geofence",
+            "schema": {
+              "$ref": "#/definitions/Geofence"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": "true"
+          }
+        ],
+        "summary": "Update Geofence",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/AssetUpdateResponse"
+            }
+          }
+        }
+      }
+    },
+    "/api/asset/georoute/{id}": {
+      "put": {
+        "tags": ["Assets"],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": "true",
+            "description": "Token <token>"
+          },
+          {
+            "name": "georoute",
+            "in": "body",
+            "description": "Update georoute",
+            "schema": {
+              "$ref": "#/definitions/Geofence"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": "true"
+          }
+        ],
+        "summary": "Update Georoute",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/AssetUpdateResponse"
+            }
+          }
+        }
+      }
+    },
+    "/api/asset/getgeofence/{id}": {
+      "get": {
+        "tags": ["Assets"],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token <token>"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": "true"
+          }
+        ],
+        "summary": "Get Geofence",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Geofence"
+            }
+          }
+        }
+      }
+    },
+    "/api/asset/getgeoroute/{id}": {
+      "get": {
+        "tags": ["Assets"],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token <token>"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": "true"
+          }
+        ],
+        "summary": "Get Georoute",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Geofence"
+            }
+          }
+        }
+      }
+    },
+    "/api/asset/notification/{id}": {
+      "get": {
+        "tags": ["Assets"],
+        "description": "Get Notification",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token <token>"
+          },
+          {
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "summary": "Get Notification ",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Get Notification",
+            "schema": {
+              "$ref": "#/definitions/Notification"
+            }
+          }
+        }
+      }
+    },
+    "/api/asset/notification/": {
+      "get": {
+        "tags": ["Assets"],
+        "description": "Get Notification",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token <token>"
+          }
+        ],
+        "summary": "Get Notifications ",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Get Notifications",
+            "schema": {
+              "$ref": "#/definitions/Notification"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "required": ["name", "email", "password"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "UserResponse": {
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            },
+            "token": {
+              "type": "string"
+            }
+          }
+        },
+        "error": {
+          "type": "string"
+        }
+      }
+    },
+    "ProfileResponse": {
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            }
+          }
+        },
+        "error": {
+          "type": "string"
+        }
+      }
+    },
+    "Profile": {
+      "properties": {
+        "phone": {
+          "type": "number"
+        },
+        "address": {
+          "type": "string"
+        },
+        "about": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "isMale": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        }
+        
+      }
+    },
+    "UpdatePassword": {
+          "properties": {
+            "oldPassword": {
+              "type": "string"
+            },
+            "newPassword": {
+              "type": "string"
+            }
+          }
+    },
+    "UserLogin": {
+      "required": ["email", "password"],
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "Asset": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "desc": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "image_url": {
+          "type": "string"
+        },
+        "body": {
+          "type": "object",
+          "properties": {
+            "modelNo": {
+              "type": "string"
+            },
+            "companyName": {
+              "type": "string"
+            },
+            "employeeId": {
+              "type": "integer"
+            },
+            "address": {
+              "type": "string"
+            }
+          }
+        },
+        "lat": {
+          "type": "string"
+        },
+        "lon": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string"
+        }
+      }
+    },
+    "AssetGps": {
+      "properties": {
+        "lat": {
+          "type": "string"
+        },
+        "lon": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string"
+        }
+      }
+    },
+    "AssetResponse": {
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "desc": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "image_url": {
+              "type": "string"
+            },
+            "lat": {
+              "type": "string"
+            },
+            "lon": {
+              "type": "string"
+            },
+            "timestamp": {
+              "type": "string"
+            },
+            "body": {
+              "type": "object",
+              "properties": {
+                "modelNo": {
+                  "type": "string"
+                },
+                "companyName": {
+                  "type": "string"
+                },
+                "employeeId": {
+                  "type": "integer"
+                },
+                "address": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "error": {
+          "type": "string"
+        }
+      }
+    },
+    "AssetUpdate": {
+      "properties": {
+        "lat": {
+          "type": "string"
+        },
+        "lon": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string"
+        }
+      }
+    },
+    "AssetUpdateResponse": {
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "success": {
+              "type": "boolean"
+            }
+          }
+        },
+        "error": {
+          "type": "string"
+        }
+      }
+    },
+    "AssetsList": {
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/Asset"
+          }
+        },
+        "error": {
+          "type": "string"
+        }
+      }
+    },
+    "AssetTrackResponse": {
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "desc": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "image_url": {
+              "type": "string"
+            },
+            "body": {
+              "type": "object",
+              "properties": {
+                "modelNo": {
+                  "type": "string"
+                },
+                "companyName": {
+                  "type": "string"
+                },
+                "employeeId": {
+                  "type": "integer"
+                },
+                "address": {
+                  "type": "string"
+                }
+              }
+            },
+            "track": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/AssetGps"
+              }
+            }
+          }
+        },
+        "error": {
+          "type": "string"
+        }
+      }
+    },
+    "Geofence": {
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "properties": {
+          "type": "object"
+        },
+        "geometry": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string"
+            },
+            "coordinates": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "lat": {
+                      "type": "integer"
+                    },
+                    "lon": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "NotificationGps": {
+      "properties": {
+        "lat": {
+          "type": "string"
+        },
+        "lon": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "Notification": {
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "track": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/NotificationGps"
+              }
+            }
+          }
+        },
+        "error": {
+          "type" : "string"
+        }
+      }
+    }
+  }
+}
