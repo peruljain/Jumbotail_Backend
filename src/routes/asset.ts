@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { authByToken } from "../middleware/auth";
 
-const {createAsset, updateLocation, getAssets, getAsset, getAssetByTime} = require('../controllers/asset')
+const {createAsset, updateLocation, getAssets, getAsset, getAssetByTime, getAssetInfo} = require('../controllers/asset')
 const {updateGeoFence, updateGeoRoute, getGeofence, getGeoroute, deleteGeoFence,deleteGeoRoute} = require('../controllers/geo')
 const {getNotificationById,getAllNotification} = require('../controllers/notification')
 
@@ -14,6 +14,8 @@ route.patch('/asset/:id', updateLocation)
 route.get('/asset/list', authByToken, getAssets)
 
 route.get('/asset/track/:_id', authByToken, getAsset)
+
+route.get('/asset/info', authByToken, getAssetInfo)
 
 route.get('/asset/trackbytime/:_id', authByToken, getAssetByTime)
 
