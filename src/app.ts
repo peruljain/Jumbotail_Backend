@@ -12,7 +12,7 @@ const swaggerUi = require("swagger-ui-express");
 let swaggerDocument = require("../swagger.json");
 
 //change swagger host dynamically for development
-//note: use 'npm run start-local' command for this to work
+//note: use 'npm run localhost' command for this to work
 if(process.env.NODE_ENV && process.env.NODE_ENV.trim() === "development"){
   swaggerDocument.host ="localhost:8003";
   swaggerDocument.schemes = ["http"];

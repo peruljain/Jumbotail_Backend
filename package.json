@@ -10,7 +10,8 @@
     "watch-node": "nodemon dist/server.js",
     "watch-ts": "tsc -w",
     "test": "jest --detectOpenHandles --testTimeout=10000",
-    "deploy": "git add . && git commit -m Heroku && git push origin main"
+    "deploy": "git add . && git commit -m Heroku && git push origin main",
+    "localhost": "set NODE_ENV=development && ts-node-dev src/server.ts"
   },
   "keywords": [],
   "author": "",
