@@ -15,7 +15,7 @@ route.get('/asset/list', authByToken, getAssets)
 
 route.get('/asset/track/:_id', authByToken, getAsset)
 
-route.get('/asset/info', authByToken, getAssetInfo)
+route.get('/asset/info/:id', authByToken, getAssetInfo)
 
 route.get('/asset/trackbytime/:_id', authByToken, getAssetByTime)
 
