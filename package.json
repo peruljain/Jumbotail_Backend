@@ -6,11 +6,10 @@
   "scripts": {
     "start": "node dist/server.js",
     "build-ts": "tsc",
-    "preinstall": "npm run build-ts",
     "watch-node": "nodemon dist/server.js",
-    "start-local": "set NODE_ENV=development && ts-node-dev src/server.ts",
     "watch-ts": "tsc -w",
-    "test": "jest --detectOpenHandles --testTimeout=10000 --runInBand"
+    "test": "jest --detectOpenHandles --testTimeout=10000",
+    "deploy": "git add . && git commit -m Heroku && git push origin main"
   },
   "keywords": [],
   "author": "",
