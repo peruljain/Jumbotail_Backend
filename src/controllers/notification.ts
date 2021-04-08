@@ -1,6 +1,11 @@
 import { Request, Response } from "express";
 const Notification = require("../models/Notification");
-const [convert, parses, parseNotifications,parseNotification] = require("../utils/parsing");
+const [
+  convert,
+  parses,
+  parseNotifications,
+  parseNotification,
+] = require("../utils/parsing");
 var mongoose = require("mongoose");
 
 exports.getNotificationById = async (req: Request, res: Response) => {
@@ -24,31 +29,21 @@ exports.getNotificationById = async (req: Request, res: Response) => {
   //   { $group: { _id: "$_id", track: { $push: "$track" } } },
   // ]);
 
-  // if (!data) {
-  //   return res.status(422).json({
-  //     error: { message: "Notification Id does not exist" },
-  //   });
-  // }
-  // return res.status(200).json({
-  //   data: data.length === 0 ? data : data[0].track,
-  //   error: {},
-  // });
-
-  const data = await Notification.findOne({_id:req.params.id})
-  const result = parseNotification(data)
+  const data = await Notification.findOne({ _id: req.params.id });
+  const result = parseNotification((req as any).email.email, data);
   return res.status(200).json({
     data: result,
-    error: {}
-  })
+    error: {},
+  });
 };
 
 exports.getAllNotification = async (req: Request, res: Response) => {
-  const data = await Notification.find({})
-  const result = parseNotifications(data)
+  const data = await Notification.find({});
+  const result = parseNotifications((req as any).email.email, data);
   return res.status(200).json({
     data: result,
-    error: {}
-  })
+    error: {},
+  });
 };
 
 export const markSeen = async (assetId: string, id: string, email: string) => {

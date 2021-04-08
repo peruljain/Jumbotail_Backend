@@ -25,7 +25,6 @@ exports.signup = async (req: Request, res: Response) => {
   });
   await user.save(async (err: any) => {
     if (err) {
-      console.log(err)
       return res.status(422).json({
         error: err.message,
         data: {}

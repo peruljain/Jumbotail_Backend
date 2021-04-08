@@ -3,10 +3,9 @@ const User = require("../models/User");
 
 exports.getUser = async (req: Request, res: Response) => {
   let data = (req as any).email;
-   User.findOne({ email: data.email }, (err: any, user: any) => {
+  
+  User.findOne({ email: data.email }, (err: any, user: any) => {
     if (err || !user) {
-      console.log(err)
-      console.log(user)
       return res.status(401).json({
         error: {
           message: "No user with this email exists",
@@ -14,8 +13,10 @@ exports.getUser = async (req: Request, res: Response) => {
         data: {},
       });
     }
+    let userData = {...user._doc}
+    delete userData.password;
     return res.status(200).json({
-      data: user,
+      data: userData,
       error: {},
     });
   });

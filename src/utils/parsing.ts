@@ -22,14 +22,14 @@ var parses = (data: { geometry: { type: any }; coordinates: any[]; properties: a
     };
 }
 
-var parseNotifications = (datas: any[])=>{
-    
+var parseNotifications = (email:String,datas: any[])=>{
+
     let result: any[] = []
     datas.forEach(element => {
         element.track.forEach((value: { timestamp: any; seenBy: any; _id: any; lat: any; lon: any; type: any; status: any }) => {
             var obj = {
               timestamp: value.timestamp,
-              seenBy: value.seenBy,
+              seen: value.seenBy.includes(email),
               _id: value._id,
               lat: value.lat,
               lon: value.lon,
@@ -49,14 +49,14 @@ var parseNotifications = (datas: any[])=>{
     return result
 }
 
-var parseNotification = (datas: { track: any[]; name: any; _id: any })=>{
+var parseNotification = (email:String,datas: { track: any[]; name: any; _id: any })=>{
     
     let result: any[] = []
     
         datas.track.forEach(value => {
             var obj = {
               timestamp: value.timestamp,
-              seenBy: value.seenBy,
+              seen:value.seenBy.includes(email),
               _id: value._id,
               lat: value.lat,
               lon: value.lon,

@@ -38,7 +38,6 @@ describe("Asset End points", () => {
         .set("Accept", "application/json");
       expect(response.statusCode).toBe(201);
       expect(response.body.data).not.toBe(null);
-      //console.log(id)
       done();
     });
   });

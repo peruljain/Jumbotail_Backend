@@ -377,6 +377,58 @@
         }
       }
     },
+    "/api/asset/delgeofence/{id}": {
+      "delete": {
+        "tags": ["Assets"],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token <token>"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": "true"
+          }
+        ],
+        "summary": "Delete Geofence",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/AssetUpdateResponse"
+            }
+          }
+        }
+      }
+    },
+    "/api/asset/delgeoroute/{id}": {
+      "delete": {
+        "tags": ["Assets"],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token <token>"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": "true"
+          }
+        ],
+        "summary": "Delete Georoute",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/AssetUpdateResponse"
+            }
+          }
+        }
+      }
+    },
     "/api/asset/getgeofence/{id}": {
       "get": {
         "tags": ["Assets"],
