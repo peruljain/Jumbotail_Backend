@@ -77,7 +77,7 @@ describe("Auth Endpoints", () => {
         .set("Accept", "application/json");
 
       expect(response.statusCode).toBe(401);
-      expect(response.body.error.message).toBe("Wrong Current password");
+      expect(response.body.error.message).toBe("Wrong Password");
       done();
     });
 
