@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { handleGeoFence, handleGeoRoute } from "./geo";
 const Asset = require("../models/Asset");
 const GeoFence = require("../models/GeoFence");
 const AssetTrack = require("../models/AssetTrack");
@@ -7,11 +8,11 @@ const GeoRoute = require("../models/GeoRoute");
 const [
   convert,
   parses,
+  parseGeo,
   parseNotifications,
   parseNotification,
 ] = require("../utils/parsing");
 var mongoose = require("mongoose");
-import { handleGeoFence, handleGeoRoute } from "./geo";
 
 exports.createAsset = async (req: Request, res: Response) => {
   const data_asset = {
@@ -40,61 +41,6 @@ exports.createAsset = async (req: Request, res: Response) => {
         error: err.message,
       });
     }
-
-    // const geofence = new GeoFence({
-    //   _id: result._id,
-    //   type: "Feature",
-    // });
-
-    const geofence = new GeoFence({
-      _id: result._id,
-      type: "Feature",
-      properties: {},
-      geometry: {
-        type: "Polygon",
-        coordinates: [
-          [
-            [66.26953125, 16.214674588248542],
-            [93.42773437499999, 16.214674588248542],
-            [93.42773437499999, 28.38173504322308],
-            [66.26953125, 28.38173504322308],
-            [66.26953125, 16.214674588248542],
-          ],
-        ],
-      },
-    });
-
-    await geofence.save((error: any, results: any) => {
-      if (err) {
-        return res.status(422).json({
-          data: {},
-          error: error.message,
-        });
-      }
-    });
-
-    const georoute = new GeoRoute({
-      _id: result._id,
-      type: "Feature",
-      coordinates: [],
-      properties: {},
-      geometry: {
-        type: "LineString",
-        coordinates: [
-          [77.255859375, 16.130262012034756],
-          [77.255859375, 28.304380682962783],
-        ],
-      },
-    });
-
-    await georoute.save((error: any, results: any) => {
-      if (err) {
-        return res.status(422).json({
-          data: {},
-          error: error.message,
-        });
-      }
-    });
 
     const notification = new Notification({
       _id: result._id,
@@ -238,11 +184,11 @@ exports.getAsset = async (req: Request, res: Response) => {
           _id: req.params._id,
         }).exec();
 
-      return res.status(200).json({
+        return res.status(200).json({
         data: {
           asset_data,
           track: track_data.track,
-          geofence: geofence_data,
+          geofence: geofence_data ? parseGeo(geofence_data) : geofence_data,
           georoute: georoute_data ? parses(georoute_data) : georoute_data,
         },
         error: {},

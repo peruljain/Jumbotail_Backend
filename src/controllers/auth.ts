@@ -68,7 +68,7 @@ exports.login = async (req: Request, res: Response) => {
 
     if (passwordMatch == false) {
       return res.status(401).json({
-        error:{ message: "Wrong password"},
+        error:{ message: "Wrong Current password"},
         data: {}
       });
     }

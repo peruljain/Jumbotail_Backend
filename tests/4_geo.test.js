@@ -99,7 +99,7 @@ describe("Geo End points", () => {
         .send({})
         .set("Authorization", token)
         .expect(422);
-      expect(response.body.error.message).toBe("body is required");
+      expect(response.body.error.message).toBe("Body is Required");
       done();
     });
 
@@ -120,8 +120,8 @@ describe("Geo End points", () => {
       const response = await supertest(app)
         .get("/api/asset/getgeoroute/" + temp_id)
         .set("Authorization", token)
-        .expect(422);
-      expect(response.body.error.message).toBe("Georoute Id does not exist");
+        .expect(404);
+      expect(response.body.error.message).toBe("Geo Route Does not Exist");
       done();
     });
 
@@ -142,8 +142,8 @@ describe("Geo End points", () => {
       const response = await supertest(app)
         .get("/api/asset/getgeofence/" + temp_id)
         .set("Authorization", token)
-        .expect(422);
-      expect(response.body.error.message).toBe("Geofence Id does not exist");
+        .expect(404);
+      expect(response.body.error.message).toBe("Geo Fence Does not Exist");
       done();
     });
 

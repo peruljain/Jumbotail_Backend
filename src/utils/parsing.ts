@@ -18,7 +18,14 @@ var convert = (coordinates: any)=>{
 var parses = (data: { geometry: { type: any }; coordinates: any[]; properties: any })=>{
     return { 
         geometry:{type:data.geometry.type,coordinates:data.coordinates[0]},
-        properties:data.properties
+        properties:data.properties ? data.properties : {}
+    };
+}
+
+var parseGeo = (data: any)=>{
+    return { 
+        geometry:data.geometry,
+        properties:data.properties ? data.properties : {}
     };
 }
 
@@ -76,4 +83,4 @@ var parseNotification = (email:String,datas: { track: any[]; name: any; _id: any
     return result
 }
 
-module.exports = [convert, parses, parseNotifications, parseNotification]
+module.exports = [convert, parses, parseGeo, parseNotifications, parseNotification]

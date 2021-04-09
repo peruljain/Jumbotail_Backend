@@ -38,18 +38,26 @@ if (process.env.NODE_ENV !== "test") {
   io.on("connection", function (socket: any) {
     socket.on(
       "notification",
-      ({
-        assetId,
-        id,
-        email,
-      }: {
+      (notifications:[{
         assetId: string;
         id: string;
         email: string;
-      }) => {
-        // console.log(assetId, id, email)
-        //add email in notification's sendBy in Db
-        markSeen(assetId, id, email);
+      }]) => {
+        // console.log(notifications);
+        notifications.forEach( ({
+          assetId,
+          id,
+          email
+        } : {
+          assetId: string;
+          id: string;
+          email: string;
+        })=>{
+          //add email in notification's sendBy in Database
+
+          markSeen(assetId, id, email);
+        })
+        
       }
     );
   });

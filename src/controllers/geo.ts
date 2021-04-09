@@ -2,70 +2,58 @@ import { Request, Response } from "express";
 const GeoFence = require("../models/GeoFence");
 const GeoRoute = require("../models/GeoRoute");
 const Notification = require("../models/Notification");
-const [convert, parses] = require("../utils/parsing");
-var geojson = require('geojson-tools')
+const [convert, parses, parseGeo] = require("../utils/parsing");
+var geojson = require("geojson-tools");
 var mongoose = require("mongoose");
 import { io } from "../server";
 
 exports.getGeofence = async (req: Request, res: Response) => {
-  const data = await GeoFence.findOne({ _id: req.params.id }).exec();
-
-  if (!data) {
-    return res.status(422).json({
-      error: { message: "Geofence Id does not exist" },
+  let geofence_exists = await GeoFence.exists({ _id: req.params.id });
+  let geofence_data = null;
+  if (geofence_exists)
+    geofence_data = await GeoFence.findOne({
+      _id: req.params.id,
+    }).exec();
+  else {
+    return res.status(404).json({
+      error: { message: "Geo Fence Does not Exist" },
     });
   }
   return res.status(200).json({
-    data: data,
-    error: {message:"Geo Fence Does not Exist"},
+    data: geofence_data ? parseGeo(geofence_data) : geofence_data,
+    error: {},
   });
 };
 
 exports.getGeoroute = async (req: Request, res: Response) => {
-  
-
-  let data = await GeoRoute.findOne({ _id: req.params.id }).exec();
-
-  if (!data) {
-    return res.status(422).json({
-      error: { message: "Georoute Id does not exist" },
+  let georoute_exists = await GeoRoute.exists({ _id: req.params.id });
+  let georoute_data = null;
+  if (georoute_exists)
+    georoute_data = await GeoRoute.findOne({
+      _id: req.params.id,
+    }).exec();
+  else {
+    return res.status(404).json({
+      error: { message: "Geo Route Does not Exist" },
     });
   }
-
   return res.status(200).json({
-    data: parses(data),
-    error: {message:"Geo Route Does not Exist"},
+    data: georoute_data ? parses(georoute_data) : georoute_data,
+    error: {},
   });
 };
 
 exports.updateGeoFence = async (req: Request, res: Response) => {
-
-
-  if(req.body.geometry===undefined) {
+  if (req.body.geometry === undefined) {
     return res.status(422).json({
-      data: {
-      },
+      data: {},
       error: {
-        message: "body is required"
+        message: "body is required",
       },
     });
   }
 
-  let array = req.body.geometry.coordinates[0];
-
-  array = geojson.complexify(array, 0.5);
-
-  const data = await GeoFence.updateOne(
-    { _id: req.params.id },
-    {
-      $set: {
-        properties: req.body.properties,
-        geometry: req.body.geometry,
-      },
-    }
-  );
-
-  await Notification.updateOne(
+  const data = await Notification.updateOne(
     { _id: req.params.id },
     {
       $set: {
@@ -74,13 +62,33 @@ exports.updateGeoFence = async (req: Request, res: Response) => {
     }
   );
 
-  if(data.n==0) {
+  if (data.n == 0) {
     return res.status(422).json({
       error: {
-        message: "Asset does not exist"
+        message: "Asset does not exist",
       },
-      data: {}
+      data: {},
     });
+  }
+
+  let array = req.body.geometry.coordinates[0];
+
+  array = geojson.complexify(array, 0.5);
+
+  const geofence = req.body;
+
+  if (await GeoFence.exists({ _id: req.params.id })) {
+    await GeoFence.updateOne(
+      { _id: req.params.id },
+      {
+        $set: geofence,
+      }
+    );
+  } else {
+    await new GeoFence({
+      ...geofence,
+      _id: req.params.id,
+    }).save();
   }
 
   return res.status(200).json({
@@ -92,30 +100,16 @@ exports.updateGeoFence = async (req: Request, res: Response) => {
 };
 
 exports.updateGeoRoute = async (req: Request, res: Response) => {
-
-  if(req.body.geometry===undefined) {
+  if (req.body.geometry === undefined) {
     return res.status(422).json({
-      data: {
-      },
+      data: {},
       error: {
-        message: "body is required"
+        message: "Body is Required",
       },
     });
   }
 
-
-  const data = await GeoRoute.updateOne(
-    { _id: req.params.id },
-    {
-      $set: {
-        properties: req.body.properties,
-        coordinates: req.body.geometry.coordinates,
-        geometry: convert(req.body.geometry.coordinates),
-      },
-    }
-  );
-
-  await Notification.updateOne(
+  const data = await Notification.updateOne(
     { _id: req.params.id },
     {
       $set: {
@@ -124,13 +118,30 @@ exports.updateGeoRoute = async (req: Request, res: Response) => {
     }
   );
 
-  if(data.n==0) {
+  if (data.n == 0) {
     return res.status(422).json({
       error: {
-        message: "Asset does not exist"
+        message: "Asset does not exist",
       },
-      data: {}
+      data: {},
     });
+  }
+
+  const georoute = req.body;
+  georoute.coordinates = georoute.geometry.coordinates;
+  georoute.geometry = convert(georoute.geometry.coordinates);
+  if (await GeoRoute.exists({ _id: req.params.id })) {
+    await GeoRoute.updateOne(
+      { _id: req.params.id },
+      {
+        $set: georoute,
+      }
+    );
+  } else {
+    await new GeoRoute({
+      ...georoute,
+      _id: req.params.id,
+    }).save();
   }
 
   return res.status(200).json({
@@ -141,12 +152,8 @@ exports.updateGeoRoute = async (req: Request, res: Response) => {
   });
 };
 
-
 exports.deleteGeoFence = async (req: Request, res: Response) => {
-
-  await GeoFence.deleteOne(
-    { _id: req.params.id }
-  );
+  await GeoFence.deleteOne({ _id: req.params.id });
 
   return res.status(200).json({
     data: {
@@ -157,10 +164,7 @@ exports.deleteGeoFence = async (req: Request, res: Response) => {
 };
 
 exports.deleteGeoRoute = async (req: Request, res: Response) => {
-
-  await GeoRoute.deleteOne(
-    { _id: req.params.id }
-  );
+  await GeoRoute.deleteOne({ _id: req.params.id });
 
   return res.status(200).json({
     data: {
@@ -169,7 +173,6 @@ exports.deleteGeoRoute = async (req: Request, res: Response) => {
     error: {},
   });
 };
-
 
 const generateNotification = (
   oldWithinGeoBound: Boolean,
@@ -254,7 +257,7 @@ export const handleGeoFence = async (req: Request, res: Response) => {
       },
     }
   );
-}
+};
 
 export const handleGeoRoute = async (req: Request, res: Response) => {
   let georoute_data = await GeoRoute.find({
@@ -265,7 +268,7 @@ export const handleGeoRoute = async (req: Request, res: Response) => {
           $near: {
             $geometry: {
               type: "Point",
-              coordinates: [req.body.lon, req.body.lat],
+              coordinates: [req.body.lat, req.body.lon],
             },
             $maxDistance: 1000,
           },
@@ -275,7 +278,10 @@ export const handleGeoRoute = async (req: Request, res: Response) => {
   });
   const notificationData = await Notification.findOne({ _id: req.params.id });
   let newWithinGeoBound = georoute_data.length !== 0;
-  let status = generateNotification(notificationData.onGeoRoute, newWithinGeoBound);
+  let status = generateNotification(
+    notificationData.onGeoRoute,
+    newWithinGeoBound
+  );
   const query = await Notification.findOne({ _id: req.params.id }, { name: 1 });
   if (status !== "none") {
     //notification exists for geo route
@@ -312,6 +318,4 @@ export const handleGeoRoute = async (req: Request, res: Response) => {
       },
     }
   );
-
-
-}
+};
