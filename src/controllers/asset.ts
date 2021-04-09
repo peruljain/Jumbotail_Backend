@@ -224,8 +224,8 @@ exports.getAsset = async (req: Request, res: Response) => {
         _id: req.params._id,
       }).exec();
 
-      let geofence_exists = await GeoFence.exists({ _id: req.params.id });
-      let georoute_exists = await GeoRoute.exists({ _id: req.params.id });
+      let geofence_exists = await GeoFence.exists({ _id: req.params._id });
+      let georoute_exists = await GeoRoute.exists({ _id: req.params._id });
 
       let geofence_data = null;
       let georoute_data = null;
