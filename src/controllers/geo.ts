@@ -5,7 +5,7 @@ const Notification = require("../models/Notification");
 const [convert, parses] = require("../utils/parsing");
 var geojson = require('geojson-tools')
 var mongoose = require("mongoose");
-import { io } from "../socket";
+import { io } from "../server";
 
 exports.getGeofence = async (req: Request, res: Response) => {
   const data = await GeoFence.findOne({ _id: req.params.id }).exec();
