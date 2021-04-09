@@ -293,3 +293,21 @@ exports.getAssetByTime = async (req: Request, res: Response) => {
     error: {},
   });
 };
+
+exports.getAssetInfo = async (req: Request, res: Response) => {
+  await Asset.findOne({
+    _id: req.params.id
+  }, (err:any , asset_data:any)=> {
+    if (err || !asset_data) {
+      return res.status(422).json({
+        error: { message: "Asset does not exist" },
+        data: {},
+      });
+    }
+    return res.status(200).json({
+      data: asset_data,
+      error: {}
+    })
+  })
+}
+
