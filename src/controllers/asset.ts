@@ -77,10 +77,10 @@ exports.createAsset = async (req: Request, res: Response) => {
 };
 
 exports.updateLocation = async (req: Request, res: Response) => {
-  if (!req.body.lat || !req.body.lon) {
+  if (!req.body.lat || !req.body.lon ) {
     return res.status(422).json({
       data: {},
-      error: { message: "Lat, lon are required" },
+      error: { message: "Lat and lon are required" },
     });
   }
 
