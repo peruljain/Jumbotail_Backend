@@ -77,12 +77,17 @@ exports.createAsset = async (req: Request, res: Response) => {
 };
 
 exports.updateLocation = async (req: Request, res: Response) => {
-  if (!req.body.lat || !req.body.lon || !req.body.timestamp) {
+  if (!req.body.lat || !req.body.lon) {
     return res.status(422).json({
       data: {},
-      error: { message: "Lat, lon and timestamp are required" },
+      error: { message: "Lat, lon are required" },
     });
   }
+
+  if(!req.body.timestamp) {
+    req.body.timestamp = Date.now()
+  }
+
   //update in Asset Colletion
   const asset_data = await Asset.updateOne(
     { _id: req.params.id },
